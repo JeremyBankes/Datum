@@ -64,7 +64,7 @@ public class Main implements Runnable {
 		Main.width = 1080;
 		Main.height = Main.width * 2 / 3;
 		Main.TPS = 60;
-		Main.FPS = 6000;
+		Main.FPS = 60;
 		Main.font = new Font("Pixel-Noir Regular", 0, 16);
 		Main.window = new Window("Datum", Main.width, Main.height);
 		Main.window.getCanvas().addMouseListener(new MouseInput());
