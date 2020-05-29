@@ -8,10 +8,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.jeremy.datum.Main;
 import com.jeremy.datum.entity.Entity;
@@ -19,6 +17,8 @@ import com.jeremy.datum.graphics.Camera;
 import com.jeremy.datum.graphics.Overlay;
 import com.jeremy.datum.gui.page.pages.SettingsPage;
 import com.jeremy.datum.state.states.GameState;
+
+import jdk.nashorn.api.scripting.URLReader;
 
 public class World {
 	public static long timestamp;
@@ -134,8 +134,6 @@ public class World {
 				try {
 					Overlay.flood(0.25f);
 					Thread.sleep(250);
-					StringBuffer quote = new StringBuffer();
-					loadQuote(quote);
 					GameState.player.toSpawn();
 					Overlay.titleFlood("Congratulations!\nYou beat the maze!", 0.25f);
 					Thread.sleep(1500L);
@@ -146,7 +144,8 @@ public class World {
 					Thread.sleep(1500L);
 					Overlay.titleDrain(0.25f);
 					Thread.sleep(200L);
-					boolean gotQuote = quote.length() != 0;
+					String quote = getQuote();
+					boolean gotQuote = quote != null;
 					Overlay.titleFlood(gotQuote ? quote.toString() : "Making you a new maze!", 0.25f);
 					World.generateMap(SettingsPage.getMapSize(), SettingsPage.getMapSize());
 					Thread.sleep(gotQuote ? 5000L : 1000L);
@@ -159,20 +158,36 @@ public class World {
 		});
 	}
 
-	public static void loadQuote(StringBuffer quote) {
+	private static String getQuote() {
 		try {
-			quote.setLength(0);
-			URL url = new URL("https://quota.glitch.me/random");
-			final URLConnection connection = url.openConnection();
-			final InputStream stream = connection.getInputStream();
-			JSONParser parser = new JSONParser();
-			JSONObject json = (JSONObject) parser.parse(new InputStreamReader(stream));
-			quote.append(json.get("quoteText"));
-			quote.append("\n ~");
-			quote.append(json.get("quoteAuthor"));
-		} catch (IOException | ParseException ioException) {
-			System.out.println("Failed to fetch quote. " + ioException.getMessage());
+			BufferedReader reader = new BufferedReader(new URLReader(new URL("https://quota.glitch.me/random")));
+			String data = reader.readLine();
+			Matcher matcher = Pattern.compile("(?:(?<=\"quoteText\":\")|(?<=\"quoteAuthor\":\"))[^\"]*").matcher(data);
+			String quote = null;
+			if (matcher.find()) quote = matcher.group();
+			if (matcher.find()) quote = String.valueOf(quote) + "\n~ " + matcher.group();
+			reader.close();
+			return quote;
+		} catch (IOException exception) {
+			exception.printStackTrace();
+			return null;
 		}
+	}
+
+	public static void loadQuotes(StringBuffer quote) {
+		//		try {
+		//			quote.setLength(0);
+		//			URL url = new URL("https://quota.glitch.me/random");
+		//			final URLConnection connection = url.openConnection();
+		//			final InputStream stream = connection.getInputStream();
+		//			JSONParser parser = new JSONParser();
+		//			JSONObject json = (JSONObject) parser.parse(new InputStreamReader(stream));
+		//			quote.append(json.get("quoteText"));
+		//			quote.append("\n ~");
+		//			quote.append(json.get("quoteAuthor"));
+		//		} catch (IOException | ParseException ioException) {
+		//			System.out.println("Failed to fetch quote. " + ioException.getMessage());
+		//		}
 	}
 
 	public static String formatSeconds(long timeInSeconds) {
@@ -183,19 +198,16 @@ public class World {
 
 		String formattedTime = "";
 		if (hours > 0) {
-			if (hours < 10)
-				formattedTime += "0";
+			if (hours < 10) formattedTime += "0";
 			formattedTime += hours + " hours, ";
 		}
 
 		if (minutes > 0) {
-			if (minutes < 10)
-				formattedTime += "0";
+			if (minutes < 10) formattedTime += "0";
 			formattedTime += minutes + " minutes, ";
 		}
 
-		if (seconds < 10)
-			formattedTime += "0";
+		if (seconds < 10) formattedTime += "0";
 		formattedTime += seconds + " seconds";
 
 		return formattedTime;
@@ -204,5 +216,5 @@ public class World {
 	public static Tile getTile(final int x, final int y) {
 		return World.map[y][x];
 	}
-	
+
 }

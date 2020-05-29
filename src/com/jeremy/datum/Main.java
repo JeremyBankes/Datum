@@ -2,12 +2,9 @@ package com.jeremy.datum;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferStrategy;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 
 import com.jeremy.datum.graphics.Overlay;
 import com.jeremy.datum.graphics.window.Window;
@@ -21,7 +18,7 @@ import com.jeremy.datum.tools.JAudio;
 public class Main implements Runnable {
 
 	public static final String NAME = "Datum";
-	public static final Color COLOR;
+	public static final Color COLOR = new Color(255, 255, 255);
 	public static Thread thread;
 	public static boolean running;
 	public static Window window;
@@ -30,13 +27,9 @@ public class Main implements Runnable {
 	public static int FPS;
 	public static int TPS;
 	public static Font font;
-	static {
-		COLOR = new Color(255, 255, 255);
-	}
 
 	public static void main(final String[] args) {
 		new Main();
-		System.out.println();
 	}
 
 	public static void start() {
@@ -81,7 +74,6 @@ public class Main implements Runnable {
 
 		Main.thread = new Thread(this);
 		start();
-
 	}
 
 	public Font getFont() {
