@@ -7,6 +7,7 @@ import com.jeremy.datum.world.Tile;
 import com.jeremy.datum.world.World;
 
 public class Collision {
+	
 	public static void xCollision(final Player player) {
 		final int tileSize = World.tileSize;
 		final Rectangle collisionBox = player.getCollisionBoxX();

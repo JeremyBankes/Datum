@@ -1,10 +1,13 @@
 package com.jeremy.datum;
 
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import com.jeremy.datum.graphics.Overlay;
 import com.jeremy.datum.graphics.window.Window;
@@ -46,11 +49,9 @@ public class Main implements Runnable {
 	}
 
 	private BufferStrategy bufferStrategy;
-
+	private BufferedImage virtualScreen;
 	private Graphics2D g;
-
 	private int tps;
-
 	private int fps;
 
 	public Main() {
@@ -71,6 +72,8 @@ public class Main implements Runnable {
 		Main.window.getCanvas().addMouseMotionListener(new MouseInput());
 		Main.window.getCanvas().addMouseWheelListener(new MouseInput());
 		Main.window.getCanvas().addKeyListener(new KeyInput());
+
+		virtualScreen = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
 		Main.thread = new Thread(this);
 		start();
@@ -121,12 +124,16 @@ public class Main implements Runnable {
 			Main.window.getCanvas().createBufferStrategy(3);
 			return;
 		}
-		(g = (Graphics2D) bufferStrategy.getDrawGraphics()).setColor(Main.COLOR);
+		Graphics canvasGraphics = bufferStrategy.getDrawGraphics();
+		g = (Graphics2D) virtualScreen.getGraphics();
+		g.setColor(Main.COLOR);
 		g.fillRect(0, 0, Main.width, Main.height);
 		if (State.state != null) {
 			State.state.render(g);
 		}
 		Overlay.render(g);
+		Canvas canvas = Main.window.getCanvas();
+		canvasGraphics.drawImage(virtualScreen, 0, 0, canvas.getWidth(), canvas.getHeight(), canvas);
 		bufferStrategy.show();
 		g.dispose();
 	}

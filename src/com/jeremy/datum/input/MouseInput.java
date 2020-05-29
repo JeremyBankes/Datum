@@ -1,6 +1,10 @@
 package com.jeremy.datum.input;
 
+import static java.lang.Math.*;
+
 import java.awt.event.*;
+
+import com.jeremy.datum.Main;
 
 public class MouseInput extends MouseAdapter {
 	public static boolean leftPressed;
@@ -37,14 +41,13 @@ public class MouseInput extends MouseAdapter {
 
 	@Override
 	public void mouseMoved(final MouseEvent event) {
-		MouseInput.x = event.getX();
-		MouseInput.y = event.getY();
+		MouseInput.x = round((float) event.getX() * Main.width / Main.window.getCanvas().getWidth());
+		MouseInput.y = round((float) event.getY() * Main.height / Main.window.getCanvas().getHeight());
 	}
 
 	@Override
 	public void mouseDragged(final MouseEvent event) {
-		MouseInput.x = event.getX();
-		MouseInput.y = event.getY();
+		mouseMoved(event);
 	}
 
 	@Override
