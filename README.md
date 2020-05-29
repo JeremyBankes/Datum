@@ -7,4 +7,4 @@ Thank you to [delorie](http://www.delorie.com/game-room/mazes/genmaze.cgi) for p
 
 ###### This project requires [Java 1.8+](https://java.com/en/download/) to run
 
-[cover]: https://github.com/JeremyBankes/Datum/blob/master/res/cover.png
+[cover]: https://raw.githubusercontent.com/JeremyBankes/Datum/master/res/cover.png
