@@ -18,8 +18,6 @@ import com.jeremy.datum.graphics.Overlay;
 import com.jeremy.datum.gui.page.pages.SettingsPage;
 import com.jeremy.datum.state.states.GameState;
 
-import jdk.nashorn.api.scripting.URLReader;
-
 public class World {
 	public static long timestamp;
 	public static int tileSize;
@@ -160,7 +158,9 @@ public class World {
 
 	private static String getQuote() {
 		try {
-			BufferedReader reader = new BufferedReader(new URLReader(new URL("https://quota.glitch.me/random")));
+			URL url = new URL("https://quota.glitch.me/random");
+			URLConnection connection = url.openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String data = reader.readLine();
 			Matcher matcher = Pattern.compile("(?:(?<=\"quoteText\":\")|(?<=\"quoteAuthor\":\"))[^\"]*").matcher(data);
 			String quote = null;
