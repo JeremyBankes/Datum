@@ -1,4 +1,6 @@
-#Datum
+# Datum
+
+***
 
 **[Download Game](https://github.com/JeremyBankes/Datum/releases/download/1.0.0/Datum.jar)**
 (A pre-compiled runnable jar file)
